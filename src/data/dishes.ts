@@ -1,13 +1,14 @@
-import matter from "gray-matter";
-import { Buffer } from "buffer";
+import { parseFrontmatter } from "@/lib/frontmatter";
 
-// gray-matter 在浏览器需要 Buffer
-if (typeof window !== "undefined" && !(window as any).Buffer) {
-  (window as any).Buffer = Buffer;
-}
-
-// 导入图片资源（保持打包优化）
+// 导入图片资源（保持 Vite 打包优化）
 import tomatoEgg from "@/assets/dish-tomato-egg.jpg";
+import hongshaorou from "@/assets/dish-hongshaorou.jpg";
+import kungpao from "@/assets/dish-kungpao.jpg";
+import mapotofu from "@/assets/dish-mapotofu.jpg";
+import steamedfish from "@/assets/dish-steamedfish.jpg";
+import bokchoy from "@/assets/dish-bokchoy.jpg";
+import noodles from "@/assets/dish-noodles.jpg";
+import xiaolongbao from "@/assets/dish-xiaolongbao.jpg";
 import hongshaorou from "@/assets/dish-hongshaorou.jpg";
 import kungpao from "@/assets/dish-kungpao.jpg";
 import mapotofu from "@/assets/dish-mapotofu.jpg";

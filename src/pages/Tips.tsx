@@ -1,7 +1,8 @@
 import { SiteHeader } from "@/components/SiteHeader";
 import { PICKING_TIPS } from "@/data/market";
-import { Sparkles, AlertTriangle } from "lucide-react";
 import { useMemo, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 const CATS = ["全部", "蔬菜", "肉禽", "水产", "蛋奶", "水果"] as const;
 
@@ -62,22 +63,15 @@ const Tips = () => {
               </div>
             </header>
 
-            <ul className="space-y-2 mb-3">
-              {tip.tips.map((t, i) => (
-                <li key={i} className="flex gap-2 text-sm text-foreground/85 leading-relaxed">
-                  <Sparkles className="w-3.5 h-3.5 text-accent shrink-0 mt-1" />
-                  <span>{t}</span>
-                </li>
-              ))}
-            </ul>
-
-            {tip.avoid && (
-              <div className="flex gap-2 text-xs text-destructive/90 bg-destructive/8 rounded-lg p-2.5 border border-destructive/20"
-                style={{ backgroundColor: "hsl(0 75% 50% / 0.06)" }}>
-                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-                <span>{tip.avoid}</span>
-              </div>
-            )}
+            <div className="prose prose-sm max-w-none
+              prose-headings:font-display prose-headings:font-bold
+              prose-h2:text-sm prose-h2:mt-4 prose-h2:mb-2 prose-h2:first:mt-0
+              prose-h2:text-foreground/90
+              prose-p:text-foreground/85 prose-p:my-1
+              prose-ul:my-1 prose-li:text-foreground/85 prose-li:my-0.5
+              prose-li:marker:text-accent">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{tip.content}</ReactMarkdown>
+            </div>
           </article>
         ))}
       </main>

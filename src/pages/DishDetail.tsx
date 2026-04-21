@@ -1,7 +1,9 @@
 import { Link, useParams } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { DISHES } from "@/data/dishes";
 import { SiteHeader } from "@/components/SiteHeader";
-import { ArrowLeft, Clock, Coins, Flame, Leaf, Heart, AlertTriangle, ChefHat, Utensils, Lightbulb } from "lucide-react";
+import { ArrowLeft, Clock, Coins, Flame, Leaf, Heart, AlertTriangle, Utensils } from "lucide-react";
 
 const Section = ({ icon: Icon, title, accent = "primary", children }: { icon: any; title: string; accent?: "primary" | "secondary" | "accent" | "destructive"; children: React.ReactNode }) => {
   const accentMap = {
@@ -124,33 +126,29 @@ const DishDetail = () => {
         </Section>
       </section>
 
-      {/* Steps */}
-      <section className="container py-4">
-        <Section icon={ChefHat} title="做法步骤" accent="primary">
-          <ol className="space-y-4">
-            {dish.steps.map((s, i) => (
-              <li key={i} className="flex gap-4">
-                <span className="shrink-0 grid place-items-center w-9 h-9 rounded-full bg-gradient-warm text-primary-foreground font-display font-bold shadow-soft">
-                  {i + 1}
-                </span>
-                <p className="pt-1.5 text-sm sm:text-base text-foreground/85 leading-relaxed">{s}</p>
-              </li>
-            ))}
-          </ol>
-        </Section>
+      {/* Markdown 正文：做法步骤 + 小贴士 */}
+      <section className="container py-4 pb-16">
+        <article className="rounded-2xl bg-card shadow-card p-5 sm:p-7 prose prose-sm sm:prose-base max-w-none
+          prose-headings:font-display prose-headings:font-bold prose-headings:text-foreground
+          prose-h2:text-lg sm:prose-h2:text-xl prose-h2:flex prose-h2:items-center prose-h2:gap-2
+          prose-h2:mt-6 prose-h2:mb-4 prose-h2:first:mt-0
+          prose-p:text-foreground/85 prose-p:leading-relaxed
+          prose-li:text-foreground/85 prose-li:leading-relaxed
+          prose-ol:pl-0 prose-ol:list-none prose-ol:space-y-3
+          [&_ol>li]:relative [&_ol>li]:pl-12
+          [&_ol]:counter-reset-[step]
+          [&_ol>li]:before:content-[counter(step)] [&_ol>li]:before:counter-increment-[step]
+          [&_ol>li]:before:absolute [&_ol>li]:before:left-0 [&_ol>li]:before:top-0
+          [&_ol>li]:before:w-9 [&_ol>li]:before:h-9 [&_ol>li]:before:rounded-full
+          [&_ol>li]:before:bg-gradient-warm [&_ol>li]:before:text-primary-foreground
+          [&_ol>li]:before:font-display [&_ol>li]:before:font-bold
+          [&_ol>li]:before:grid [&_ol>li]:before:place-items-center
+          [&_ol>li]:before:shadow-soft">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+            {dish.content}
+          </ReactMarkdown>
+        </article>
       </section>
-
-      {dish.tips && (
-        <section className="container pb-16">
-          <div className="rounded-2xl border border-accent/40 bg-accent/10 p-5 flex gap-3">
-            <Lightbulb className="w-5 h-5 text-accent-foreground shrink-0 mt-0.5" />
-            <div>
-              <p className="font-display font-bold text-sm">小贴士</p>
-              <p className="text-sm text-foreground/80 mt-1 leading-relaxed">{dish.tips}</p>
-            </div>
-          </div>
-        </section>
-      )}
     </div>
   );
 };

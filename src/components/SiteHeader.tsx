@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { ChefHat } from "lucide-react";
+import { FoodWheel } from "@/components/FoodWheel";
 
 const navItems = [
   { to: "/", label: "菜谱" },

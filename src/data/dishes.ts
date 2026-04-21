@@ -1,12 +1,6 @@
-import matter from "gray-matter";
-import { Buffer } from "buffer";
+import { parseFrontmatter } from "@/lib/frontmatter";
 
-// gray-matter 在浏览器需要 Buffer
-if (typeof window !== "undefined" && !(window as any).Buffer) {
-  (window as any).Buffer = Buffer;
-}
-
-// 导入图片资源（保持打包优化）
+// 导入图片资源（保持 Vite 打包优化）
 import tomatoEgg from "@/assets/dish-tomato-egg.jpg";
 import hongshaorou from "@/assets/dish-hongshaorou.jpg";
 import kungpao from "@/assets/dish-kungpao.jpg";
@@ -54,7 +48,7 @@ const modules = import.meta.glob("../content/dishes/*.md", {
 }) as Record<string, string>;
 
 const parsed: Dish[] = Object.values(modules).map((raw) => {
-  const { data, content } = matter(raw);
+  const { data, content } = parseFrontmatter(raw);
   return {
     slug: data.slug,
     title: data.title,

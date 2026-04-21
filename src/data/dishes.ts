@@ -9,13 +9,6 @@ import steamedfish from "@/assets/dish-steamedfish.jpg";
 import bokchoy from "@/assets/dish-bokchoy.jpg";
 import noodles from "@/assets/dish-noodles.jpg";
 import xiaolongbao from "@/assets/dish-xiaolongbao.jpg";
-import hongshaorou from "@/assets/dish-hongshaorou.jpg";
-import kungpao from "@/assets/dish-kungpao.jpg";
-import mapotofu from "@/assets/dish-mapotofu.jpg";
-import steamedfish from "@/assets/dish-steamedfish.jpg";
-import bokchoy from "@/assets/dish-bokchoy.jpg";
-import noodles from "@/assets/dish-noodles.jpg";
-import xiaolongbao from "@/assets/dish-xiaolongbao.jpg";
 
 const IMAGE_MAP: Record<string, string> = {
   "dish-tomato-egg.jpg": tomatoEgg,
@@ -55,7 +48,7 @@ const modules = import.meta.glob("../content/dishes/*.md", {
 }) as Record<string, string>;
 
 const parsed: Dish[] = Object.values(modules).map((raw) => {
-  const { data, content } = matter(raw);
+  const { data, content } = parseFrontmatter(raw);
   return {
     slug: data.slug,
     title: data.title,

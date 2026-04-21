@@ -13,13 +13,13 @@ nutrition:
   - 碳水化合物 45g
   - 脂肪 12g
   - 铁 3mg
-    efficacy:
+efficacy:
   - 温补气血
   - 暖胃驱寒
-    taboos:
+taboos:
   - 高血压少喝汤
   - 痛风患者慎食
-    ingredients:
+ingredients:
   - name: 牛腱子
     amount: 500g
   - name: 拉面
@@ -41,6 +41,7 @@ nutrition:
     amount: 5g
   - name: 料酒
     amount: 10ml
+
 ---
 
 ## 🍜 做法步骤（超详细版，适合新手）

@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { DishCard } from "@/components/DishCard";
-import { FoodWheel } from "@/components/FoodWheel";
 import { DISHES } from "@/data/dishes";
 import { Search } from "lucide-react";
 

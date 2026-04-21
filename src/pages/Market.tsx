@@ -1,5 +1,4 @@
 import { SiteHeader } from "@/components/SiteHeader";
-import { FoodWheel } from "@/components/FoodWheel";
 import { MARKET_PRICES, MARKET_DATE, type MarketPrice } from "@/data/market";
 import { TrendingDown, TrendingUp, Minus, CalendarDays } from "lucide-react";
 import { useMemo, useState } from "react";

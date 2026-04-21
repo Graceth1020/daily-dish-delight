@@ -1,5 +1,4 @@
 import { SiteHeader } from "@/components/SiteHeader";
-import { FoodWheel } from "@/components/FoodWheel";
 import { PICKING_TIPS } from "@/data/market";
 import { Sparkles, AlertTriangle } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -82,8 +81,6 @@ const Tips = () => {
           </article>
         ))}
       </main>
-
-      <FoodWheel />
     </div>
   );
 };

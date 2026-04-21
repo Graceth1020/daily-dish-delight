@@ -67,14 +67,11 @@ export const FoodWheel = () => {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="fixed bottom-5 right-5 sm:bottom-8 sm:right-8 z-40 group"
+        className="group inline-flex items-center gap-1.5 rounded-full bg-gradient-warm text-primary-foreground px-3 sm:px-4 py-1.5 sm:py-2 shadow-warm font-medium text-xs sm:text-sm hover:opacity-95 active:scale-95 transition-all"
         aria-label="今天吃什么"
       >
-        <span className="absolute inset-0 rounded-full bg-gradient-warm blur-xl opacity-60 group-hover:opacity-90 transition-opacity" />
-        <span className="relative flex items-center gap-2 rounded-full bg-gradient-warm text-primary-foreground pl-4 pr-5 py-3 shadow-warm font-medium text-sm sm:text-base animate-float">
-          <Sparkles className="w-4 h-4" />
-          今天吃什么
-        </span>
+        <Sparkles className="w-3.5 h-3.5" />
+        <span>今天吃什么</span>
       </button>
 
       <Dialog open={open} onOpenChange={setOpen}>

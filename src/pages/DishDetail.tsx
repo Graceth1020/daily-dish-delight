@@ -1,7 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { DISHES } from "@/data/dishes";
 import { SiteHeader } from "@/components/SiteHeader";
-import { FoodWheel } from "@/components/FoodWheel";
 import { ArrowLeft, Clock, Coins, Flame, Leaf, Heart, AlertTriangle, ChefHat, Utensils, Lightbulb } from "lucide-react";
 
 const Section = ({ icon: Icon, title, accent = "primary", children }: { icon: any; title: string; accent?: "primary" | "secondary" | "accent" | "destructive"; children: React.ReactNode }) => {
@@ -152,8 +151,6 @@ const DishDetail = () => {
           </div>
         </section>
       )}
-
-      <FoodWheel />
     </div>
   );
 };

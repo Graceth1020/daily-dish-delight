@@ -3,7 +3,6 @@ import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Utensils } from "lucide-react";
 import { DISHES } from "@/data/dishes";
-import { useNavigate } from "react-router-dom";
 import confetti from "canvas-confetti";
 
 const PALETTE = [
@@ -23,7 +22,7 @@ export const FoodWheel = () => {
   const [result, setResult] = useState<number | null>(null);
   const wheelRef = useRef<HTMLDivElement>(null);
   const rotationRef = useRef(0);
-  const navigate = useNavigate();
+  
 
   const slice = 360 / DISHES.length;
 
@@ -136,13 +135,13 @@ export const FoodWheel = () => {
                 <p className="font-display text-xl font-bold text-foreground mt-1">
                   {DISHES[result].title}
                 </p>
-                <Button
-                  onClick={() => { setOpen(false); navigate(`/dish/${DISHES[result].slug}`); }}
-                  className="mt-3 bg-gradient-warm hover:opacity-90 text-primary-foreground border-0"
-                  size="sm"
+                <a
+                  href={`/dish/${DISHES[result].slug}`}
+                  onClick={() => setOpen(false)}
+                  className="mt-3 inline-flex items-center rounded-md bg-gradient-warm hover:opacity-90 text-primary-foreground border-0 h-9 px-3 text-sm font-medium"
                 >
                   <Utensils className="w-4 h-4 mr-1" /> 看看怎么做
-                </Button>
+                </a>
               </div>
             ) : (
               <p className="text-sm text-muted-foreground pt-4">

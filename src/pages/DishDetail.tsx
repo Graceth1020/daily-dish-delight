@@ -152,8 +152,6 @@ const DishDetail = () => {
           </div>
         </section>
       )}
-
-      <FoodWheel />
     </div>
   );
 };

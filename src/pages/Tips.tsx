@@ -82,8 +82,6 @@ const Tips = () => {
           </article>
         ))}
       </main>
-
-      <FoodWheel />
     </div>
   );
 };

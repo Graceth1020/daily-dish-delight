@@ -83,8 +83,6 @@ const Index = () => {
           © 今天吃什么 · 用爱与油盐酱醋做出的小站
         </div>
       </footer>
-
-      <FoodWheel />
     </div>
   );
 };

@@ -87,8 +87,6 @@ const Market = () => {
           </section>
         ))}
       </main>
-
-      <FoodWheel />
     </div>
   );
 };

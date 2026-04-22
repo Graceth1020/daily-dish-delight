@@ -3,7 +3,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { DISHES } from "@/data/dishes";
 import { SiteHeader } from "@/components/SiteHeader";
-import { ArrowLeft, Clock, Coins, Flame, Leaf, Heart, AlertTriangle, Utensils, User } from "lucide-react";
+import { ArrowLeft, Clock, Coins, Flame, Leaf, Heart, AlertTriangle, Utensils, User, BookOpen, Info } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -11,6 +11,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const Section = ({ icon: Icon, title, accent = "primary", children }: { icon: any; title: string; accent?: "primary" | "secondary" | "accent" | "destructive"; children: React.ReactNode }) => {
   const accentMap = {

@@ -3,7 +3,14 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { DISHES } from "@/data/dishes";
 import { SiteHeader } from "@/components/SiteHeader";
-import { ArrowLeft, Clock, Coins, Flame, Leaf, Heart, AlertTriangle, Utensils } from "lucide-react";
+import { ArrowLeft, Clock, Coins, Flame, Leaf, Heart, AlertTriangle, Utensils, User } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const Section = ({ icon: Icon, title, accent = "primary", children }: { icon: any; title: string; accent?: "primary" | "secondary" | "accent" | "destructive"; children: React.ReactNode }) => {
   const accentMap = {
@@ -52,7 +59,25 @@ const DishDetail = () => {
         </Link>
         <div className="grid md:grid-cols-2 gap-6 lg:gap-10 items-start">
           <div className="rounded-3xl overflow-hidden shadow-warm">
-            <img src={dish.cover} alt={dish.title} className="w-full h-auto object-cover" />
+            {dish.images.length > 1 ? (
+              <Carousel opts={{ loop: true }} className="relative">
+                <CarouselContent>
+                  {dish.images.map((src, idx) => (
+                    <CarouselItem key={idx}>
+                      <img
+                        src={src}
+                        alt={`${dish.title} ${idx + 1}`}
+                        className="w-full h-auto object-cover"
+                      />
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="left-3" />
+                <CarouselNext className="right-3" />
+              </Carousel>
+            ) : (
+              <img src={dish.cover} alt={dish.title} className="w-full h-auto object-cover" />
+            )}
           </div>
           <div className="md:pt-4">
             <div className="flex items-center gap-2">
@@ -64,8 +89,9 @@ const DishDetail = () => {
             </h1>
             <p className="mt-3 text-base text-muted-foreground leading-relaxed">{dish.excerpt}</p>
 
-            <div className="mt-6 grid grid-cols-3 gap-3">
+            <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
               <Stat icon={Coins} label="预计成本" value={dish.price} />
+              <Stat icon={User} label="人均" value={dish.perPerson} />
               <Stat icon={Clock} label="耗时" value={dish.time} />
               <Stat icon={Flame} label="热量" value={dish.calories} />
             </div>

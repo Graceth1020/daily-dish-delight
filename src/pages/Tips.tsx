@@ -3,15 +3,24 @@ import { PICKING_TIPS } from "@/data/market";
 import { useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { Search } from "lucide-react";
 
 const CATS = ["全部", "蔬菜", "肉禽", "水产", "蛋奶", "水果"] as const;
 
 const Tips = () => {
   const [cat, setCat] = useState<(typeof CATS)[number]>("全部");
-  const list = useMemo(
-    () => (cat === "全部" ? PICKING_TIPS : PICKING_TIPS.filter((t) => t.category === cat)),
-    [cat]
-  );
+  const [q, setQ] = useState("");
+  const list = useMemo(() => {
+    const query = q.trim().toLowerCase();
+    return PICKING_TIPS
+      .filter((t) => (cat === "全部" ? true : t.category === cat))
+      .filter((t) =>
+        query
+          ? t.ingredient.toLowerCase().includes(query) ||
+            t.content.toLowerCase().includes(query)
+          : true
+      );
+  }, [cat, q]);
 
   return (
     <div className="min-h-screen bg-gradient-cream">

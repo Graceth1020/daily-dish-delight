@@ -19,7 +19,7 @@ export const DishCard = ({ dish }: { dish: Dish }) => {
           {dish.category}
         </span>
         <span className="absolute top-2 right-2 rounded-full bg-primary/90 text-primary-foreground px-2 py-0.5 text-[10px] font-medium">
-          {dish.price}
+          人均 {dish.perPerson}
         </span>
       </div>
       <div className="p-3">

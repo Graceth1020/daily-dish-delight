@@ -2,10 +2,13 @@
 slug: garlic-bok-choy
 title: 蒜蓉小油菜
 cover: dish-bokchoy.jpg
+images:
+  - dish-bokchoy.jpg
 excerpt: 5 分钟出锅的翠绿系健康菜，解腻必备。
 category: 素食
 difficulty: 简单
 price: ¥4
+perPerson: ¥2
 time: 5 分钟
 calories: 约 80 千卡 / 份
 nutrition:

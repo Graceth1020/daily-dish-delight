@@ -2,10 +2,13 @@
 slug: kung-pao-chicken
 title: 宫保鸡丁
 cover: dish-kungpao.jpg
+images:
+  - dish-kungpao.jpg
 excerpt: 焦香花生 × 滑嫩鸡丁，麻辣鲜香一口入魂。
 category: 川菜
 difficulty: 中等
 price: ¥22
+perPerson: ¥11
 time: 25 分钟
 calories: 约 360 千卡 / 份
 nutrition:

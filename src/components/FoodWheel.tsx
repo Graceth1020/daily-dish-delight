@@ -1,7 +1,8 @@
 import { useState, useRef, useMemo } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Sparkles, Utensils, ArrowLeft } from "lucide-react";
+import { Sparkles, Utensils, ArrowLeft, Plus, Check } from "lucide-react";
 import { DISHES, type Dish } from "@/data/dishes";
+import { FoodWheelSummary } from "./FoodWheelSummary";
 import confetti from "canvas-confetti";
 
 // 按菜系分配色相
@@ -28,6 +29,8 @@ export const FoodWheel = () => {
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<number | null>(null);
   const [category, setCategory] = useState<FilterCategory | null>(null);
+  const [picks, setPicks] = useState<Dish[]>([]);
+  const [view, setView] = useState<"wheel" | "summary">("wheel");
   const wheelRef = useRef<HTMLDivElement>(null);
   const rotationRef = useRef(0);
 
@@ -136,14 +139,36 @@ export const FoodWheel = () => {
     return list;
   }, [dishes]);
 
+  const resetAll = () => {
+    setCategory(null);
+    setResult(null);
+    setPicks([]);
+    setView("wheel");
+    rotationRef.current = 0;
+  };
+
+  const addCurrentToPicks = () => {
+    if (result === null) return;
+    const dish = dishes[result];
+    if (picks.find((p) => p.slug === dish.slug)) {
+      // 已存在则不重复添加，直接回到分类选择
+      setCategory(null);
+      setResult(null);
+      rotationRef.current = 0;
+      return;
+    }
+    setPicks((prev) => [...prev, dish]);
+    setCategory(null);
+    setResult(null);
+    rotationRef.current = 0;
+  };
+
   return (
     <>
       <button
         onClick={() => {
           setOpen(true);
-          setCategory(null);
-          setResult(null);
-          rotationRef.current = 0;
+          resetAll();
         }}
         className="group inline-flex items-center gap-1.5 rounded-full bg-gradient-warm text-primary-foreground px-3 sm:px-4 py-1.5 sm:py-2 shadow-warm font-medium text-xs sm:text-sm hover:opacity-95 active:scale-95 transition-all"
         aria-label="今天吃什么"
@@ -156,10 +181,16 @@ export const FoodWheel = () => {
         <DialogContent className="max-w-md p-0 overflow-hidden bg-gradient-cream border-border/60">
           <div className="px-6 pt-6 pb-2 text-center">
             <DialogTitle className="font-display text-2xl text-foreground">
-              转一转，<span className="text-gradient-warm">今天吃什么</span>
+              {view === "summary" ? (
+                <>本次菜单 · <span className="text-gradient-warm">汇总</span></>
+              ) : (
+                <>转一转，<span className="text-gradient-warm">今天吃什么</span></>
+              )}
             </DialogTitle>
             <DialogDescription className="text-xs text-muted-foreground mt-1">
-              {category === null
+              {view === "summary"
+                ? "快看看今天的伙食预算与禁忌"
+                : category === null
                 ? "先选个口味，再让命运决定"
                 : category === ALL
                 ? "从所有菜中随机抽一道"
@@ -167,9 +198,43 @@ export const FoodWheel = () => {
             </DialogDescription>
           </div>
 
-          {category === null ? (
+          {view === "summary" ? (
+            <FoodWheelSummary
+              picks={picks}
+              onRemove={(slug) =>
+                setPicks((prev) => prev.filter((p) => p.slug !== slug))
+              }
+              onReset={resetAll}
+              onClose={() => setOpen(false)}
+            />
+          ) : category === null ? (
             // ===== 第一步：选择菜系 =====
             <div className="px-6 py-6">
+              {picks.length > 0 && (
+                <div className="mb-4 rounded-xl border border-primary/30 bg-primary/5 p-3">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-medium text-foreground">
+                      已选 {picks.length} 道
+                    </p>
+                    <button
+                      onClick={() => setView("summary")}
+                      className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:opacity-80"
+                    >
+                      <Check className="w-3 h-3" /> 完成
+                    </button>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {picks.map((p) => (
+                      <span
+                        key={p.slug}
+                        className="text-[11px] px-2 py-0.5 rounded-full bg-background text-foreground/80 border border-border"
+                      >
+                        {p.title}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
               <div className="grid grid-cols-2 gap-3">
                 {categories.map((c) => {
                   const isAll = c === ALL;
@@ -207,7 +272,7 @@ export const FoodWheel = () => {
                   <ArrowLeft className="w-3 h-3" /> 重选分类
                 </button>
                 <span className="text-[11px] text-muted-foreground">
-                  共 {dishes.length} 道
+                  共 {dishes.length} 道{picks.length > 0 && ` · 已选 ${picks.length}`}
                 </span>
               </div>
 
@@ -264,7 +329,7 @@ export const FoodWheel = () => {
                 </button>
               </div>
 
-              <div className="px-6 pb-6 text-center min-h-[88px]">
+              <div className="px-6 pb-6 text-center min-h-[120px]">
                 {result !== null && !spinning ? (
                   <div className="animate-fade-in">
                     <p className="text-xs text-muted-foreground">
@@ -273,13 +338,32 @@ export const FoodWheel = () => {
                     <p className="font-display text-xl font-bold text-foreground mt-1">
                       {dishes[result].title}
                     </p>
-                    <a
-                      href={`#/dish/${dishes[result].slug}`}
-                      onClick={() => setOpen(false)}
-                      className="mt-3 inline-flex items-center rounded-md bg-gradient-warm hover:opacity-90 text-primary-foreground border-0 h-9 px-3 text-sm font-medium"
-                    >
-                      <Utensils className="w-4 h-4 mr-1" /> 看看怎么做
-                    </a>
+                    <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+                      <button
+                        onClick={addCurrentToPicks}
+                        className="inline-flex items-center rounded-md bg-gradient-warm hover:opacity-90 text-primary-foreground border-0 h-9 px-3 text-sm font-medium"
+                      >
+                        <Plus className="w-4 h-4 mr-1" /> 加入并继续选
+                      </button>
+                      {picks.length > 0 && (
+                        <button
+                          onClick={() => {
+                            addCurrentToPicks();
+                            setView("summary");
+                          }}
+                          className="inline-flex items-center rounded-md border border-primary/40 bg-background hover:bg-primary/5 text-primary h-9 px-3 text-sm font-medium"
+                        >
+                          <Check className="w-4 h-4 mr-1" /> 完成并汇总
+                        </button>
+                      )}
+                      <a
+                        href={`#/dish/${dishes[result].slug}`}
+                        onClick={() => setOpen(false)}
+                        className="inline-flex items-center rounded-md border border-border bg-background hover:bg-muted text-foreground h-9 px-3 text-sm font-medium"
+                      >
+                        <Utensils className="w-4 h-4 mr-1" /> 做法
+                      </a>
+                    </div>
                   </div>
                 ) : (
                   <p className="text-sm text-muted-foreground pt-4">

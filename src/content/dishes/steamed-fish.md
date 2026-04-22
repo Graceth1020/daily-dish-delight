@@ -2,10 +2,13 @@
 slug: steamed-fish
 title: 清蒸鲈鱼
 cover: dish-steamedfish.jpg
+images:
+  - dish-steamedfish.jpg
 excerpt: 鲜嫩到舌尖发抖，宴客必备的高级感家常菜。
 category: 粤菜
 difficulty: 简单
 price: ¥45
+perPerson: ¥23
 time: 20 分钟
 calories: 约 180 千卡 / 份
 nutrition:

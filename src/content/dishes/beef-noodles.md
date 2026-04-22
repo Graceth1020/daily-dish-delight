@@ -2,10 +2,13 @@
 slug: beef-noodles
 title: 清汤牛肉面
 cover: dish-noodles.jpg
+images:
+  - dish-noodles.jpg
 excerpt: 一碗热汤面，治愈所有的疲惫与坏天气。
 category: 面点
 difficulty: 中等
 price: ¥18
+perPerson: ¥18
 time: 120 分钟
 calories: 约 520 千卡 / 份
 nutrition:

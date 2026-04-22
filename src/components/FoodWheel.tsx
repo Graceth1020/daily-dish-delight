@@ -29,6 +29,8 @@ export const FoodWheel = () => {
   const [spinning, setSpinning] = useState(false);
   const [result, setResult] = useState<number | null>(null);
   const [category, setCategory] = useState<FilterCategory | null>(null);
+  const [picks, setPicks] = useState<Dish[]>([]);
+  const [view, setView] = useState<"wheel" | "summary">("wheel");
   const wheelRef = useRef<HTMLDivElement>(null);
   const rotationRef = useRef(0);
 
@@ -137,14 +139,36 @@ export const FoodWheel = () => {
     return list;
   }, [dishes]);
 
+  const resetAll = () => {
+    setCategory(null);
+    setResult(null);
+    setPicks([]);
+    setView("wheel");
+    rotationRef.current = 0;
+  };
+
+  const addCurrentToPicks = () => {
+    if (result === null) return;
+    const dish = dishes[result];
+    if (picks.find((p) => p.slug === dish.slug)) {
+      // 已存在则不重复添加，直接回到分类选择
+      setCategory(null);
+      setResult(null);
+      rotationRef.current = 0;
+      return;
+    }
+    setPicks((prev) => [...prev, dish]);
+    setCategory(null);
+    setResult(null);
+    rotationRef.current = 0;
+  };
+
   return (
     <>
       <button
         onClick={() => {
           setOpen(true);
-          setCategory(null);
-          setResult(null);
-          rotationRef.current = 0;
+          resetAll();
         }}
         className="group inline-flex items-center gap-1.5 rounded-full bg-gradient-warm text-primary-foreground px-3 sm:px-4 py-1.5 sm:py-2 shadow-warm font-medium text-xs sm:text-sm hover:opacity-95 active:scale-95 transition-all"
         aria-label="今天吃什么"

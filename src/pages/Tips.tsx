@@ -96,8 +96,10 @@ const Tips = () => {
               prose-li:marker:text-accent">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{tip.content}</ReactMarkdown>
             </div>
-          </article>
-        ))}
+              </article>
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );

@@ -254,31 +254,79 @@ export const FoodWheel = () => {
                   </div>
                 </div>
               )}
-              <div className="grid grid-cols-2 gap-3">
-                {categories.map((c) => {
-                  const isAll = c === ALL;
-                  const count = isAll
-                    ? DISHES.length
-                    : DISHES.filter((d) => d.category === c).length;
-                  const hue = isAll ? 28 : CATEGORY_HUE[c as Dish["category"]];
-                  return (
-                    <button
-                      key={c}
-                      onClick={() => handlePickCategory(c)}
-                      className="group relative overflow-hidden rounded-xl border border-border/60 bg-background/60 p-4 text-left hover:border-primary/60 hover:shadow-warm transition-all active:scale-95"
-                    >
-                      <div
-                        className="absolute -right-4 -top-4 w-16 h-16 rounded-full opacity-20 group-hover:opacity-40 transition-opacity"
-                        style={{ background: `hsl(${hue} 70% 52%)` }}
-                      />
-                      <div className="relative">
-                        <p className="font-display text-lg font-bold text-foreground">{c}</p>
-                        <p className="text-xs text-muted-foreground mt-0.5">{count} 道菜</p>
-                      </div>
-                    </button>
-                  );
-                })}
+
+              {/* 搜索框：支持直接搜菜名加入 */}
+              <div className="relative mb-4">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="搜菜名直接挑，比如 番茄、红烧..."
+                  className="w-full h-10 rounded-full bg-background border border-border pl-9 pr-4 text-sm shadow-card focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/50 transition-all"
+                />
               </div>
+
+              {query.trim() ? (
+                searchResults.length > 0 ? (
+                  <div className="flex flex-col gap-1.5 max-h-72 overflow-y-auto pr-1">
+                    {searchResults.map((d) => {
+                      const added = !!picks.find((p) => p.slug === d.slug);
+                      return (
+                        <button
+                          key={d.slug}
+                          onClick={() => addDishToPicks(d)}
+                          disabled={added}
+                          className="flex items-center justify-between rounded-xl border border-border/60 bg-background/60 px-3 py-2 hover:border-primary/60 hover:shadow-soft transition-all disabled:opacity-60"
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="text-[10px] px-1.5 py-0.5 rounded bg-secondary/15 text-secondary shrink-0">
+                              {d.category}
+                            </span>
+                            <span className="text-sm font-medium text-foreground truncate">
+                              {d.title}
+                            </span>
+                          </div>
+                          {added ? (
+                            <Check className="w-4 h-4 text-primary shrink-0" />
+                          ) : (
+                            <Plus className="w-4 h-4 text-muted-foreground shrink-0" />
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-center py-6 text-xs text-muted-foreground">
+                    没找到相关菜品
+                  </p>
+                )
+              ) : (
+                <div className="grid grid-cols-2 gap-3">
+                  {categories.map((c) => {
+                    const isAll = c === ALL;
+                    const count = isAll
+                      ? DISHES.length
+                      : DISHES.filter((d) => d.category === c).length;
+                    const hue = isAll ? 28 : CATEGORY_HUE[c as Dish["category"]];
+                    return (
+                      <button
+                        key={c}
+                        onClick={() => handlePickCategory(c)}
+                        className="group relative overflow-hidden rounded-xl border border-border/60 bg-background/60 p-4 text-left hover:border-primary/60 hover:shadow-warm transition-all active:scale-95"
+                      >
+                        <div
+                          className="absolute -right-4 -top-4 w-16 h-16 rounded-full opacity-20 group-hover:opacity-40 transition-opacity"
+                          style={{ background: `hsl(${hue} 70% 52%)` }}
+                        />
+                        <div className="relative">
+                          <p className="font-display text-lg font-bold text-foreground">{c}</p>
+                          <p className="text-xs text-muted-foreground mt-0.5">{count} 道菜</p>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           ) : (
             // ===== 第二步：转盘 =====

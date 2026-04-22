@@ -25,10 +25,14 @@ export type Dish = {
   slug: string;
   title: string;
   cover: string;
+  /** 详情页轮播图（含封面） */
+  images: string[];
   excerpt: string;
   category: "家常" | "川菜" | "粤菜" | "面点" | "素食" | "汤";
   difficulty: "简单" | "中等" | "进阶";
   price: string;
+  /** 人均价格（如 ¥6），用于汇总计算 */
+  perPerson: string;
   time: string;
   calories: string;
   nutrition: string[];
@@ -49,14 +53,20 @@ const modules = import.meta.glob("../content/dishes/*.md", {
 
 const parsed: Dish[] = Object.values(modules).map((raw) => {
   const { data, content } = parseFrontmatter(raw);
+  const rawImages: string[] = Array.isArray(data.images) && data.images.length > 0
+    ? data.images
+    : [data.cover];
+  const images = rawImages.map((src: string) => IMAGE_MAP[src] ?? src);
   return {
     slug: data.slug,
     title: data.title,
     cover: IMAGE_MAP[data.cover] ?? data.cover,
+    images,
     excerpt: data.excerpt,
     category: data.category,
     difficulty: data.difficulty,
     price: data.price,
+    perPerson: data.perPerson ?? data.price,
     time: data.time,
     calories: data.calories,
     nutrition: data.nutrition ?? [],

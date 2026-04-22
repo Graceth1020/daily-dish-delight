@@ -3,7 +3,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { DISHES } from "@/data/dishes";
 import { SiteHeader } from "@/components/SiteHeader";
-import { ArrowLeft, Clock, Coins, Flame, Leaf, Heart, AlertTriangle, Utensils, User } from "lucide-react";
+import { ArrowLeft, Clock, Coins, Flame, Leaf, Heart, AlertTriangle, Utensils, User, BookOpen, Info } from "lucide-react";
 import {
   Carousel,
   CarouselContent,
@@ -11,6 +11,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
 const Section = ({ icon: Icon, title, accent = "primary", children }: { icon: any; title: string; accent?: "primary" | "secondary" | "accent" | "destructive"; children: React.ReactNode }) => {
   const accentMap = {
@@ -99,81 +100,102 @@ const DishDetail = () => {
         </div>
       </section>
 
-      {/* Highlights */}
-      <section className="container py-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Section icon={Leaf} title="营养成分" accent="secondary">
-          <div className="flex flex-wrap gap-2">
-            {dish.nutrition.map((n) => (
-              <span key={n} className="px-3 py-1 rounded-full text-xs bg-secondary/10 text-secondary border border-secondary/20">{n}</span>
-            ))}
-          </div>
-        </Section>
-        <Section icon={Heart} title="食疗功效" accent="primary">
-          <ul className="space-y-1.5 text-sm">
-            {dish.efficacy.map((e) => (
-              <li key={e} className="flex items-start gap-2 text-foreground/80">
-                <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />{e}
-              </li>
-            ))}
-          </ul>
-        </Section>
-        <Section icon={AlertTriangle} title="食用禁忌" accent="destructive">
-          <ul className="space-y-1.5 text-sm">
-            {dish.taboos.map((t) => (
-              <li key={t} className="flex items-start gap-2 text-foreground/80">
-                <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-destructive shrink-0" />{t}
-              </li>
-            ))}
-          </ul>
-        </Section>
-      </section>
+      {/* Tabs：做法步骤 / 菜品信息 */}
+      <section className="container pb-16">
+        <Tabs defaultValue="steps" className="w-full">
+          <TabsList className="w-full sm:w-auto h-11 rounded-full bg-card shadow-card p-1">
+            <TabsTrigger
+              value="steps"
+              className="rounded-full px-4 sm:px-6 data-[state=active]:bg-gradient-warm data-[state=active]:text-primary-foreground data-[state=active]:shadow-soft"
+            >
+              <BookOpen className="w-4 h-4 mr-1.5" /> 做法步骤
+            </TabsTrigger>
+            <TabsTrigger
+              value="info"
+              className="rounded-full px-4 sm:px-6 data-[state=active]:bg-gradient-warm data-[state=active]:text-primary-foreground data-[state=active]:shadow-soft"
+            >
+              <Info className="w-4 h-4 mr-1.5" /> 菜品信息
+            </TabsTrigger>
+          </TabsList>
 
-      {/* Ingredients */}
-      <section className="container py-2 grid md:grid-cols-2 gap-4">
-        <Section icon={Utensils} title="食材" accent="secondary">
-          <div className="divide-y divide-border/60">
-            {dish.ingredients.map((i) => (
-              <div key={i.name} className="flex justify-between py-2 text-sm">
-                <span className="text-foreground/80">{i.name}</span>
-                <span className="text-muted-foreground">{i.amount}</span>
-              </div>
-            ))}
-          </div>
-        </Section>
-        <Section icon={Utensils} title="调味料" accent="accent">
-          <div className="divide-y divide-border/60">
-            {dish.seasonings.map((i) => (
-              <div key={i.name} className="flex justify-between py-2 text-sm">
-                <span className="text-foreground/80">{i.name}</span>
-                <span className="text-muted-foreground">{i.amount}</span>
-              </div>
-            ))}
-          </div>
-        </Section>
-      </section>
+          {/* Tab 1：做法步骤 */}
+          <TabsContent value="steps" className="mt-5">
+            <article className="rounded-2xl bg-card shadow-card p-5 sm:p-7 prose prose-sm sm:prose-base max-w-none
+              prose-headings:font-display prose-headings:font-bold prose-headings:text-foreground
+              prose-h2:text-lg sm:prose-h2:text-xl prose-h2:flex prose-h2:items-center prose-h2:gap-2
+              prose-h2:mt-6 prose-h2:mb-4 prose-h2:first:mt-0
+              prose-p:text-foreground/85 prose-p:leading-relaxed
+              prose-li:text-foreground/85 prose-li:leading-relaxed
+              prose-ol:pl-0 prose-ol:list-none prose-ol:space-y-3
+              [&_ol>li]:relative [&_ol>li]:pl-12
+              [&_ol]:counter-reset-[step]
+              [&_ol>li]:before:content-[counter(step)] [&_ol>li]:before:counter-increment-[step]
+              [&_ol>li]:before:absolute [&_ol>li]:before:left-0 [&_ol>li]:before:top-0
+              [&_ol>li]:before:w-9 [&_ol>li]:before:h-9 [&_ol>li]:before:rounded-full
+              [&_ol>li]:before:bg-gradient-warm [&_ol>li]:before:text-primary-foreground
+              [&_ol>li]:before:font-display [&_ol>li]:before:font-bold
+              [&_ol>li]:before:grid [&_ol>li]:before:place-items-center
+              [&_ol>li]:before:shadow-soft">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {dish.content}
+              </ReactMarkdown>
+            </article>
+          </TabsContent>
 
-      {/* Markdown 正文：做法步骤 + 小贴士 */}
-      <section className="container py-4 pb-16">
-        <article className="rounded-2xl bg-card shadow-card p-5 sm:p-7 prose prose-sm sm:prose-base max-w-none
-          prose-headings:font-display prose-headings:font-bold prose-headings:text-foreground
-          prose-h2:text-lg sm:prose-h2:text-xl prose-h2:flex prose-h2:items-center prose-h2:gap-2
-          prose-h2:mt-6 prose-h2:mb-4 prose-h2:first:mt-0
-          prose-p:text-foreground/85 prose-p:leading-relaxed
-          prose-li:text-foreground/85 prose-li:leading-relaxed
-          prose-ol:pl-0 prose-ol:list-none prose-ol:space-y-3
-          [&_ol>li]:relative [&_ol>li]:pl-12
-          [&_ol]:counter-reset-[step]
-          [&_ol>li]:before:content-[counter(step)] [&_ol>li]:before:counter-increment-[step]
-          [&_ol>li]:before:absolute [&_ol>li]:before:left-0 [&_ol>li]:before:top-0
-          [&_ol>li]:before:w-9 [&_ol>li]:before:h-9 [&_ol>li]:before:rounded-full
-          [&_ol>li]:before:bg-gradient-warm [&_ol>li]:before:text-primary-foreground
-          [&_ol>li]:before:font-display [&_ol>li]:before:font-bold
-          [&_ol>li]:before:grid [&_ol>li]:before:place-items-center
-          [&_ol>li]:before:shadow-soft">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-            {dish.content}
-          </ReactMarkdown>
-        </article>
+          {/* Tab 2：菜品信息 */}
+          <TabsContent value="info" className="mt-5 space-y-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <Section icon={Leaf} title="营养成分" accent="secondary">
+                <div className="flex flex-wrap gap-2">
+                  {dish.nutrition.map((n) => (
+                    <span key={n} className="px-3 py-1 rounded-full text-xs bg-secondary/10 text-secondary border border-secondary/20">{n}</span>
+                  ))}
+                </div>
+              </Section>
+              <Section icon={Heart} title="食疗功效" accent="primary">
+                <ul className="space-y-1.5 text-sm">
+                  {dish.efficacy.map((e) => (
+                    <li key={e} className="flex items-start gap-2 text-foreground/80">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />{e}
+                    </li>
+                  ))}
+                </ul>
+              </Section>
+              <Section icon={AlertTriangle} title="食用禁忌" accent="destructive">
+                <ul className="space-y-1.5 text-sm">
+                  {dish.taboos.map((t) => (
+                    <li key={t} className="flex items-start gap-2 text-foreground/80">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-destructive shrink-0" />{t}
+                    </li>
+                  ))}
+                </ul>
+              </Section>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <Section icon={Utensils} title="食材" accent="secondary">
+                <div className="divide-y divide-border/60">
+                  {dish.ingredients.map((i) => (
+                    <div key={i.name} className="flex justify-between py-2 text-sm">
+                      <span className="text-foreground/80">{i.name}</span>
+                      <span className="text-muted-foreground">{i.amount}</span>
+                    </div>
+                  ))}
+                </div>
+              </Section>
+              <Section icon={Utensils} title="调味料" accent="accent">
+                <div className="divide-y divide-border/60">
+                  {dish.seasonings.map((i) => (
+                    <div key={i.name} className="flex justify-between py-2 text-sm">
+                      <span className="text-foreground/80">{i.name}</span>
+                      <span className="text-muted-foreground">{i.amount}</span>
+                    </div>
+                  ))}
+                </div>
+              </Section>
+            </div>
+          </TabsContent>
+        </Tabs>
       </section>
     </div>
   );

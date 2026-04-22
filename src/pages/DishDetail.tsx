@@ -78,23 +78,42 @@ const DishDetail = () => {
           <ArrowLeft className="w-4 h-4" /> 返回菜谱
         </Link>
         <div className="grid md:grid-cols-2 gap-6 lg:gap-10 items-start">
-          <div className="rounded-3xl overflow-hidden shadow-warm">
+          <div className="rounded-3xl overflow-hidden shadow-warm relative">
             {dish.images.length > 1 ? (
-              <Carousel opts={{ loop: true }} className="relative">
-                <CarouselContent>
-                  {dish.images.map((src, idx) => (
-                    <CarouselItem key={idx}>
-                      <img
-                        src={src}
-                        alt={`${dish.title} ${idx + 1}`}
-                        className="w-full h-auto object-cover"
+              <>
+                <Carousel opts={{ loop: true }} setApi={setApi} className="relative">
+                  <CarouselContent>
+                    {dish.images.map((src, idx) => (
+                      <CarouselItem key={idx}>
+                        <img
+                          src={src}
+                          alt={`${dish.title} ${idx + 1}`}
+                          className="w-full h-auto object-cover"
+                        />
+                      </CarouselItem>
+                    ))}
+                  </CarouselContent>
+                  <CarouselPrevious className="left-3" />
+                  <CarouselNext className="right-3" />
+                </Carousel>
+                {/* 小红书风格 indicator dots */}
+                {count > 1 && (
+                  <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-foreground/40 backdrop-blur-sm">
+                    {Array.from({ length: count }).map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => api?.scrollTo(i)}
+                        aria-label={`跳到第 ${i + 1} 张`}
+                        className={`rounded-full transition-all duration-300 ${
+                          i === current
+                            ? "w-5 h-1.5 bg-background"
+                            : "w-1.5 h-1.5 bg-background/60 hover:bg-background/80"
+                        }`}
                       />
-                    </CarouselItem>
-                  ))}
-                </CarouselContent>
-                <CarouselPrevious className="left-3" />
-                <CarouselNext className="right-3" />
-              </Carousel>
+                    ))}
+                  </div>
+                )}
+              </>
             ) : (
               <img src={dish.cover} alt={dish.title} className="w-full h-auto object-cover" />
             )}

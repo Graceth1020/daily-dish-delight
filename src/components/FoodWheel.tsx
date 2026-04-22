@@ -31,6 +31,7 @@ export const FoodWheel = () => {
   const [category, setCategory] = useState<FilterCategory | null>(null);
   const [picks, setPicks] = useState<Dish[]>([]);
   const [view, setView] = useState<"wheel" | "summary">("wheel");
+  const [query, setQuery] = useState("");
   const wheelRef = useRef<HTMLDivElement>(null);
   const rotationRef = useRef(0);
 

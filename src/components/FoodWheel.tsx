@@ -1,20 +1,25 @@
-import { useState, useRef } from "react";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { useState, useRef, useMemo } from "react";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Sparkles, Utensils } from "lucide-react";
-import { DISHES } from "@/data/dishes";
+import { DISHES, type Dish } from "@/data/dishes";
 import confetti from "canvas-confetti";
 
-const PALETTE = [
-  "hsl(8 75% 55%)",
-  "hsl(28 90% 58%)",
-  "hsl(42 95% 60%)",
-  "hsl(90 40% 48%)",
-  "hsl(160 45% 45%)",
-  "hsl(200 60% 50%)",
-  "hsl(340 70% 55%)",
-  "hsl(20 60% 40%)",
-];
+// 按菜系分配色相，保证同菜系颜色接近、不同菜系明显区分
+const CATEGORY_HUE: Record<Dish["category"], number> = {
+  家常: 28,   // 暖橙
+  川菜: 8,    // 红
+  粤菜: 160,  // 青绿
+  面点: 42,   // 金黄
+  素食: 95,   // 草绿
+  汤: 200,    // 蓝
+};
+
+// 同菜系内根据序号微调亮度，避免完全相同
+const colorFor = (category: Dish["category"], indexInCategory: number) => {
+  const hue = CATEGORY_HUE[category] ?? 28;
+  const lightness = 52 + (indexInCategory % 3) * 6; // 52 / 58 / 64
+  return `hsl(${hue} 70% ${lightness}%)`;
+};
 
 export const FoodWheel = () => {
   const [open, setOpen] = useState(false);
@@ -22,9 +27,31 @@ export const FoodWheel = () => {
   const [result, setResult] = useState<number | null>(null);
   const wheelRef = useRef<HTMLDivElement>(null);
   const rotationRef = useRef(0);
-  
 
   const slice = 360 / DISHES.length;
+
+  // 给每道菜计算其在所属菜系内的序号 → 决定颜色
+  const sliceColors = useMemo(() => {
+    const counter: Record<string, number> = {};
+    return DISHES.map((d) => {
+      const idx = counter[d.category] ?? 0;
+      counter[d.category] = idx + 1;
+      return colorFor(d.category, idx);
+    });
+  }, []);
+
+  // 当前菜系图例（去重 + 保持顺序）
+  const legend = useMemo(() => {
+    const seen = new Set<string>();
+    const list: { category: Dish["category"]; color: string }[] = [];
+    DISHES.forEach((d) => {
+      if (!seen.has(d.category)) {
+        seen.add(d.category);
+        list.push({ category: d.category, color: `hsl(${CATEGORY_HUE[d.category]} 70% 52%)` });
+      }
+    });
+    return list;
+  }, []);
 
   const spin = () => {
     if (spinning) return;
@@ -32,10 +59,18 @@ export const FoodWheel = () => {
     setResult(null);
 
     const winner = Math.floor(Math.random() * DISHES.length);
-    // pointer at top (0deg). Make winner's slice center align to top.
+    // conic-gradient 默认从 12 点钟方向（顶部）开始顺时针绘制；指针也在顶部。
+    // 因此 winner 切片中心相对顶部的角度即 winner * slice + slice/2。
+    // 让该中心旋转到顶部（0°），需要使转盘最终累计旋转角度满足：
+    //   (rotation + centerAngle) ≡ 0 (mod 360)
+    // → rotation mod 360 = (360 - centerAngle) mod 360
     const centerAngle = winner * slice + slice / 2;
-    const target = 360 * 6 - centerAngle; // 6 full spins then settle
-    const newRotation = rotationRef.current + (target - (rotationRef.current % 360));
+    const targetMod = (360 - centerAngle) % 360;
+    const currentMod = ((rotationRef.current % 360) + 360) % 360;
+    let delta = targetMod - currentMod;
+    if (delta <= 0) delta += 360;
+    const newRotation = rotationRef.current + 360 * 6 + delta; // 至少 6 圈
+
     rotationRef.current = newRotation;
 
     if (wheelRef.current) {
@@ -55,12 +90,11 @@ export const FoodWheel = () => {
     }, 4100);
   };
 
-  // Build conic-gradient
+  // Build conic-gradient（显式 from 0deg 避免歧义）
   const gradientStops = DISHES.map((_, i) => {
     const from = i * slice;
     const to = (i + 1) * slice;
-    const color = PALETTE[i % PALETTE.length];
-    return `${color} ${from}deg ${to}deg`;
+    return `${sliceColors[i]} ${from}deg ${to}deg`;
   }).join(", ");
 
   return (
@@ -80,7 +114,22 @@ export const FoodWheel = () => {
             <DialogTitle className="font-display text-2xl text-foreground">
               转一转，<span className="text-gradient-warm">今天吃什么</span>
             </DialogTitle>
-            <p className="text-xs text-muted-foreground mt-1">让命运决定你的午餐 / 晚餐</p>
+            <DialogDescription className="text-xs text-muted-foreground mt-1">
+              让命运决定你的午餐 / 晚餐
+            </DialogDescription>
+          </div>
+
+          {/* 菜系图例 */}
+          <div className="px-6 flex flex-wrap justify-center gap-x-3 gap-y-1.5">
+            {legend.map((l) => (
+              <div key={l.category} className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                <span
+                  className="inline-block w-2.5 h-2.5 rounded-sm"
+                  style={{ background: l.color }}
+                />
+                {l.category}
+              </div>
+            ))}
           </div>
 
           <div className="relative mx-auto my-4" style={{ width: 280, height: 280 }}>
@@ -93,12 +142,14 @@ export const FoodWheel = () => {
               ref={wheelRef}
               className="w-full h-full rounded-full shadow-warm relative ring-4 ring-background"
               style={{
-                background: `conic-gradient(${gradientStops})`,
+                background: `conic-gradient(from 0deg, ${gradientStops})`,
                 transform: `rotate(0deg)`,
               }}
             >
               {DISHES.map((d, i) => {
-                const angle = i * slice + slice / 2;
+                // 切片中心相对顶部的角度；但文字定位用的是相对于 3 点钟方向（CSS rotate 起点）
+                // 因此需要 -90° 校正
+                const angle = i * slice + slice / 2 - 90;
                 return (
                   <div
                     key={d.slug}
@@ -128,12 +179,14 @@ export const FoodWheel = () => {
           <div className="px-6 pb-6 text-center min-h-[88px]">
             {result !== null && !spinning ? (
               <div className="animate-fade-in">
-                <p className="text-xs text-muted-foreground">就决定是你了！</p>
+                <p className="text-xs text-muted-foreground">
+                  就决定是你了！· <span className="text-foreground/70">{DISHES[result].category}</span>
+                </p>
                 <p className="font-display text-xl font-bold text-foreground mt-1">
                   {DISHES[result].title}
                 </p>
                 <a
-                  href={`/dish/${DISHES[result].slug}`}
+                  href={`#/dish/${DISHES[result].slug}`}
                   onClick={() => setOpen(false)}
                   className="mt-3 inline-flex items-center rounded-md bg-gradient-warm hover:opacity-90 text-primary-foreground border-0 h-9 px-3 text-sm font-medium"
                 >

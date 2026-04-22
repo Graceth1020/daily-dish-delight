@@ -2,10 +2,13 @@
 slug: mapo-tofu
 title: 麻婆豆腐
 cover: dish-mapotofu.jpg
+images:
+  - dish-mapotofu.jpg
 excerpt: 麻、辣、烫、香、酥、嫩、鲜、活，川菜八字真经。
 category: 川菜
 difficulty: 简单
 price: ¥12
+perPerson: ¥6
 time: 20 分钟
 calories: 约 260 千卡 / 份
 nutrition:

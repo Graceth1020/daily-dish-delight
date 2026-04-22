@@ -2,10 +2,13 @@
 slug: hong-shao-rou
 title: 红烧肉
 cover: dish-hongshaorou.jpg
+images:
+  - dish-hongshaorou.jpg
 excerpt: 肥而不腻、入口即化的经典本帮味道。
 category: 家常
 difficulty: 中等
 price: ¥35
+perPerson: ¥18
 time: 90 分钟
 calories: 约 480 千卡 / 份
 nutrition:

@@ -2,10 +2,13 @@
 slug: tomato-egg
 title: 番茄炒蛋
 cover: dish-tomato-egg.jpg
+images:
+  - dish-tomato-egg.jpg
 excerpt: 国民下饭菜，酸甜开胃，10 分钟搞定一道家的味道。
 category: 家常
 difficulty: 简单
 price: ¥6
+perPerson: ¥3
 time: 10 分钟
 calories: 约 220 千卡 / 份
 nutrition:

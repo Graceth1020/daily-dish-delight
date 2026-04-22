@@ -2,10 +2,13 @@
 slug: xiao-long-bao
 title: 小笼包
 cover: dish-xiaolongbao.jpg
+images:
+  - dish-xiaolongbao.jpg
 excerpt: 皮薄汁多，一口爆汁的江南灵魂面点。
 category: 面点
 difficulty: 进阶
 price: ¥28
+perPerson: ¥14
 time: 150 分钟
 calories: 约 380 千卡 / 份
 nutrition:

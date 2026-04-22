@@ -1,6 +1,6 @@
 import { useState, useRef, useMemo } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import { Sparkles, Utensils, ArrowLeft, Plus, Check } from "lucide-react";
+import { Sparkles, Utensils, ArrowLeft, Plus, Check, Search } from "lucide-react";
 import { DISHES, type Dish } from "@/data/dishes";
 import { FoodWheelSummary } from "./FoodWheelSummary";
 import confetti from "canvas-confetti";

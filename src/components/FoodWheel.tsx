@@ -145,8 +145,26 @@ export const FoodWheel = () => {
     setResult(null);
     setPicks([]);
     setView("wheel");
+    setQuery("");
     rotationRef.current = 0;
   };
+
+  const addDishToPicks = (dish: Dish) => {
+    setPicks((prev) =>
+      prev.find((p) => p.slug === dish.slug) ? prev : [...prev, dish]
+    );
+  };
+
+  const searchResults = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return [];
+    return DISHES.filter(
+      (d) =>
+        d.title.toLowerCase().includes(q) ||
+        d.excerpt.toLowerCase().includes(q) ||
+        d.category.toLowerCase().includes(q)
+    ).slice(0, 12);
+  }, [query]);
 
   const addCurrentToPicks = () => {
     if (result === null) return;
